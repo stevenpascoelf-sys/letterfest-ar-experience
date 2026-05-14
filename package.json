@@ -1,0 +1,67 @@
+{
+    "name": "hackathon-template",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "packageManager": "pnpm@10.33.0",
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "scripts": {
+        "start:dev": "vite",
+        "build": "vite build --mode prod",
+        "test": "vitest run --coverage",
+        "test:watch": "vitest",
+        "check": "pnpm run check:types && pnpm run check:format && pnpm run check:lint",
+        "check:types": "tsc -b --noEmit",
+        "check:format": "prettier --check .",
+        "check:lint": "eslint .",
+        "fix:format": "pnpm run check:format --write",
+        "fix:lint": "pnpm run check:lint --fix",
+        "supabase:gen-types": "pnpm exec supabase gen types typescript --local --schema public > src/integrations/supabase/types.ts"
+    },
+    "devDependencies": {
+        "@eslint/compat": "^2.0.4",
+        "@eslint/js": "^10.0.1",
+        "@tailwindcss/vite": "^4.2.4",
+        "@testing-library/dom": "^10.4.1",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
+        "@types/node": "^22",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "@types/three": "^0.184.1",
+        "@vitejs/plugin-react-swc": "^4.3.0",
+        "@vitest/coverage-v8": "^4.1.5",
+        "eslint": "^10.2.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.5",
+        "eslint-plugin-react-hooks": "^7.1.1",
+        "eslint-plugin-react-refresh": "^0.5.2",
+        "globals": "^17.4.0",
+        "jsdom": "^29.0.2",
+        "prettier": "^3.8.1",
+        "supabase": "^2.98.2",
+        "tailwindcss": "^4.2.4",
+        "typescript": "^6.0.2",
+        "typescript-eslint": "^8.58.1",
+        "vite": "^8.0.7",
+        "vitest": "^4.1.5"
+    },
+    "dependencies": {
+        "@letterfestcode/storefront-ui-react": "^0.4.0",
+        "@phosphor-icons/react": "^2.1.10",
+        "@supabase/supabase-js": "^2.105.4",
+        "@tanstack/react-query": "^5.100.9",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+        "react-router-dom": "^7.15.0",
+        "three": "^0.184.0"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "@swc/core",
+            "supabase"
+        ]
+    }
+}

@@ -1,0 +1,89 @@
+name: Checks
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+concurrency:
+    group: checks-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+env:
+    VITE_SUPABASE_URL: https://example.supabase.co
+    VITE_SUPABASE_PUBLISHABLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDIwMjQwMDAsImV4cCI6MTk1NzU5NzYwMH0.placeholder
+
+jobs:
+    check-types:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.33.0
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22.22.2
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run check:types
+
+    check-format:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.33.0
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22.22.2
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run check:format
+
+    check-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.33.0
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22.22.2
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run check:lint
+
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.33.0
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22.22.2
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run test
+
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+              with:
+                  version: 10.33.0
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22.22.2
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run build

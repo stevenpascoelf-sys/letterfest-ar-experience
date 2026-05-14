@@ -1,0 +1,5 @@
+# Run `asdf install` from repo root before `pnpm` / `pnpm dlx`.
+# Align package.json engines and packageManager with these lines when the app exists.
+
+nodejs 22.22.2
+pnpm 10.33.0
