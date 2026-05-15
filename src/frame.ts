@@ -9,9 +9,9 @@ export type FrameSizeDef = {
 };
 
 export const FRAME_SIZES: FrameSizeDef[] = [
-    { id: 'xl-square', label: 'XL Square', widthMm: 388, heightMm: 388 },
-    { id: 'large-portrait', label: 'Large Portrait', widthMm: 254, heightMm: 305 },
-    { id: 'small-square', label: 'Small Square', widthMm: 254, heightMm: 254 },
+    { id: 'xl-square', label: 'XL', widthMm: 388, heightMm: 388 },
+    { id: 'large-portrait', label: 'Large', widthMm: 254, heightMm: 305 },
+    { id: 'small-square', label: 'Small', widthMm: 288, heightMm: 254 },
 ];
 
 export type FrameColourDef = {
@@ -40,16 +40,6 @@ export function frameSideHex(c: FrameColour): number {
 export function getFrameSize(id: FrameSize): FrameSizeDef {
     return FRAME_SIZES.find((s) => s.id === id) ?? FRAME_SIZES[1];
 }
-
-export const COMPATIBLE_SIZES: Record<'square' | 'portrait', FrameSize[]> = {
-    square: ['xl-square', 'small-square'],
-    portrait: ['large-portrait'],
-};
-
-export const DEFAULT_SIZE_FOR: Record<'square' | 'portrait', FrameSize> = {
-    square: 'small-square',
-    portrait: 'large-portrait',
-};
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>();
 

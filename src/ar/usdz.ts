@@ -54,8 +54,13 @@ def Xform "Frame" (
         string name = "Frame"
     }
     kind = "component"
+    prepend apiSchemas = ["Preliminary_AnchoringAPI"]
 )
 {
+    token preliminary:anchoring:type = "plane"
+    token preliminary:planeAnchoring:alignment = "vertical"
+
+
     def Mesh "ShadowQuad"
     {
         float3[] extent = [(${-sw}, ${cy - sh}, ${cz}), (${sw}, ${cy + sh}, ${cz})]

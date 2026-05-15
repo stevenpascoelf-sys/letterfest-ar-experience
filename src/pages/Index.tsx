@@ -5,8 +5,6 @@ import WebXRAR from '@/ar/WebXRAR';
 import PickerSheet from '@/ar/PickerSheet';
 import {
     composeFramedArtwork,
-    COMPATIBLE_SIZES,
-    DEFAULT_SIZE_FOR,
     FRAME_COLOURS,
     FRAME_SIZES,
     getFrameSize,
@@ -22,7 +20,7 @@ export default function Index() {
     const [mode, setMode] = useState<Mode>('detecting');
     const [selectedArtwork, setSelectedArtwork] = useState<Artwork>(getDefaultArtwork());
     const [selectedColour, setSelectedColour] = useState<FrameColour>('Oak');
-    const [selectedSize, setSelectedSize] = useState<FrameSize>(DEFAULT_SIZE_FOR[getDefaultArtwork().aspect]);
+    const [selectedSize, setSelectedSize] = useState<FrameSize>('large-portrait');
     const [pickerOpen, setPickerOpen] = useState(false);
     const [labelVisible, setLabelVisible] = useState(true);
     const [arLoading, setArLoading] = useState(false);
@@ -79,12 +77,6 @@ export default function Index() {
         const t = setTimeout(() => setLabelVisible(false), 1800);
         return () => clearTimeout(t);
     }, [selectedArtwork.id, selectedColour, selectedSize]);
-
-    useEffect(() => {
-        if (!COMPATIBLE_SIZES[selectedArtwork.aspect].includes(selectedSize)) {
-            setSelectedSize(DEFAULT_SIZE_FOR[selectedArtwork.aspect]);
-        }
-    }, [selectedArtwork.aspect, selectedSize]);
 
     useEffect(() => {
         if (mode !== 'quicklook') return;

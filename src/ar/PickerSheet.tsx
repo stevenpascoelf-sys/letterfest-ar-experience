@@ -1,5 +1,5 @@
 import { ARTWORKS, type Artwork } from '@/artworks';
-import { COMPATIBLE_SIZES, FRAME_COLOURS, FRAME_SIZES, type FrameColour, type FrameSize } from '@/frame';
+import { FRAME_COLOURS, FRAME_SIZES, type FrameColour, type FrameSize } from '@/frame';
 
 type Props = {
     selectedArtworkId: string;
@@ -20,8 +20,6 @@ export default function PickerSheet({
     onSelectSize,
     onClose,
 }: Props) {
-    const selectedArtwork = ARTWORKS.find((a) => a.id === selectedArtworkId) ?? ARTWORKS[0];
-    const allowedSizes = new Set(COMPATIBLE_SIZES[selectedArtwork.aspect]);
     return (
         <div
             className="absolute inset-0 z-20 flex flex-col justify-end bg-black/40"
@@ -71,15 +69,13 @@ export default function PickerSheet({
                     <div className="flex gap-2">
                         {FRAME_SIZES.map((s) => {
                             const active = s.id === selectedSize;
-                            const allowed = allowedSizes.has(s.id);
                             return (
                                 <button
                                     key={s.id}
-                                    onClick={() => allowed && onSelectSize(s.id)}
-                                    disabled={!allowed}
+                                    onClick={() => onSelectSize(s.id)}
                                     className={`flex-1 rounded-full py-2 ring-1 transition ${
-                                        active && allowed ? 'ring-black' : 'ring-black/10'
-                                    } ${allowed ? '' : 'opacity-35'}`}
+                                        active ? 'ring-black' : 'ring-black/10'
+                                    }`}
                                     style={{ fontFamily: 'Inter', fontSize: 11 }}
                                 >
                                     {s.label}
