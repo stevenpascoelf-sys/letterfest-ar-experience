@@ -209,6 +209,69 @@ export function composeFramedArtwork(p: ComposeParams): Promise<string> {
     return promise;
 }
 
+const MAT_RGB: [number, number, number] = [0xf8, 0xf4, 0xec];
+const MAT_HEX = '#F8F4EC';
+
+function prepareArtworkOnMat(img: HTMLImageElement): HTMLCanvasElement {
+    const c = document.createElement('canvas');
+    c.width = img.width;
+    c.height = img.height;
+    const ctx = c.getContext('2d');
+    if (!ctx) return c;
+    ctx.fillStyle = MAT_HEX;
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0);
+    const data = ctx.getImageData(0, 0, c.width, c.height);
+    const p = data.data;
+
+    // Sample the 4 corners to estimate the bare artwork's background.
+    const samples: Array<[number, number, number]> = [];
+    const sampleAt = (x: number, y: number) => {
+        const idx = (y * c.width + x) * 4;
+        samples.push([p[idx], p[idx + 1], p[idx + 2]]);
+    };
+    sampleAt(0, 0);
+    sampleAt(c.width - 1, 0);
+    sampleAt(0, c.height - 1);
+    sampleAt(c.width - 1, c.height - 1);
+
+    // All corners should agree within tolerance to count as background.
+    const avg = (i: number) => Math.round(samples.reduce((s, v) => s + v[i], 0) / samples.length);
+    const bgR = avg(0);
+    const bgG = avg(1);
+    const bgB = avg(2);
+    const consistent = samples.every(
+        ([r, g, b]) => Math.abs(r - bgR) < 18 && Math.abs(g - bgG) < 18 && Math.abs(b - bgB) < 18,
+    );
+    // Only blend backgrounds that are clearly light (artwork on white-ish paper).
+    const isLight = bgR > 220 && bgG > 220 && bgB > 220;
+    if (!consistent || !isLight) return c;
+
+    // Replace pixels within tolerance of the sampled background with mat colour.
+    const tol = 14;
+    const featherTol = 28;
+    const [mR, mG, mB] = MAT_RGB;
+    for (let i = 0; i < p.length; i += 4) {
+        const dr = p[i] - bgR;
+        const dg = p[i + 1] - bgG;
+        const db = p[i + 2] - bgB;
+        const d = Math.sqrt(dr * dr + dg * dg + db * db);
+        if (d <= tol) {
+            p[i] = mR;
+            p[i + 1] = mG;
+            p[i + 2] = mB;
+        } else if (d < featherTol) {
+            // Feather between the bg-replaced colour and the original to avoid hard edges.
+            const t = (featherTol - d) / (featherTol - tol);
+            p[i] = Math.round(p[i] * (1 - t) + mR * t);
+            p[i + 1] = Math.round(p[i + 1] * (1 - t) + mG * t);
+            p[i + 2] = Math.round(p[i + 2] * (1 - t) + mB * t);
+        }
+    }
+    ctx.putImageData(data, 0, 0);
+    return c;
+}
+
 async function doCompose({ bareSrc, colour, size }: ComposeParams): Promise<string> {
     const pxPerMm = 3;
     const canvas = document.createElement('canvas');
@@ -227,7 +290,7 @@ async function doCompose({ bareSrc, colour, size }: ComposeParams): Promise<stri
     const matY = frameBorder;
     const matW = canvas.width - frameBorder * 2;
     const matH = canvas.height - frameBorder * 2;
-    ctx.fillStyle = '#F8F4EC';
+    ctx.fillStyle = MAT_HEX;
     ctx.fillRect(matX, matY, matW, matH);
 
     const artX = matX + matBorder;
@@ -236,7 +299,8 @@ async function doCompose({ bareSrc, colour, size }: ComposeParams): Promise<stri
     const artH = matH - matBorder * 2;
 
     const img = await loadImage(bareSrc);
-    const imgAspect = img.width / img.height;
+    const prepared = prepareArtworkOnMat(img);
+    const imgAspect = prepared.width / prepared.height;
     const areaAspect = artW / artH;
     let drawW: number;
     let drawH: number;
@@ -249,7 +313,7 @@ async function doCompose({ bareSrc, colour, size }: ComposeParams): Promise<stri
     }
     const dx = artX + (artW - drawW) / 2;
     const dy = artY + (artH - drawH) / 2;
-    ctx.drawImage(img, dx, dy, drawW, drawH);
+    ctx.drawImage(prepared, dx, dy, drawW, drawH);
 
     ctx.save();
     const inset = 1;
