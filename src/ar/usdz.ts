@@ -59,6 +59,8 @@ def Xform "Frame" (
 {
     token preliminary:anchoring:type = "plane"
     token preliminary:planeAnchoring:alignment = "vertical"
+    float xformOp:rotateX = -90
+    uniform token[] xformOpOrder = ["xformOp:rotateX"]
 
 
     def Mesh "ShadowQuad"
