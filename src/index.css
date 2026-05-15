@@ -8,12 +8,21 @@
 html,
 body,
 #root {
-    height: 100%;
+    min-height: 100%;
     margin: 0;
     background: #000;
     overscroll-behavior: none;
-    touch-action: none;
     -webkit-user-select: none;
     user-select: none;
     font-family: var(--font-inter);
+}
+
+/* The AR view sets data-no-scroll to lock the viewport for camera + touch
+   gestures; every other route should scroll normally on iOS and Android. */
+html[data-no-scroll],
+html[data-no-scroll] body,
+html[data-no-scroll] #root {
+    height: 100%;
+    overflow: hidden;
+    touch-action: none;
 }

@@ -29,6 +29,13 @@ export default function Index() {
 
     const sizeDef = useMemo(() => getFrameSize(selectedSize), [selectedSize]);
 
+    useEffect(() => {
+        document.documentElement.dataset.noScroll = 'true';
+        return () => {
+            delete document.documentElement.dataset.noScroll;
+        };
+    }, []);
+
     const composedArtwork: Artwork & { widthMm: number; heightMm: number; frameColour: FrameColour } = useMemo(
         () => ({
             ...selectedArtwork,
