@@ -11,7 +11,7 @@ export type FrameSizeDef = {
 export const FRAME_SIZES: FrameSizeDef[] = [
     { id: 'xl-square', label: 'XL', widthMm: 388, heightMm: 388 },
     { id: 'large-portrait', label: 'Large', widthMm: 254, heightMm: 305 },
-    { id: 'small-square', label: 'Small', widthMm: 288, heightMm: 254 },
+    { id: 'small-square', label: 'Small', widthMm: 254, heightMm: 254 },
 ];
 
 export type FrameColourDef = {
